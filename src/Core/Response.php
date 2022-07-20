@@ -1,19 +1,14 @@
 <?php
 
+namespace Core;
+
 class Response
 {
-    public $app;
-
-    public function __construct($app)
-    {
-        $this->app = $app;
-    }
-
     public function json($data)
     {
-        $json = json_encode($data);
         header("Content-Type: application/json; charset=utf-8");
-        echo $json;
+        echo json_encode($data);
+        return;
     }
 
     public function view($path, $data = [])
@@ -21,8 +16,7 @@ class Response
         header("Content-Type: text/html; charset=UTF-8");
         extract($data);
         unset($data);
-        include_once(VIEWS_PATH . "/" . $path . '.php');
-        
-        return $this;
+        include_once(VIEW_PATH . "/" . $path . '.php');
+        return;
     }
 }

@@ -1,13 +1,18 @@
 <?php
 
-require_once("./init.php");
+use Core\App;
 
-$route->action("home", function (Request $req, Response $res) {
-    return $res->view("home", [
-        "nama" => "Rizky",
-        "kelas" => "8C REG PAGI BJM",
-        "baseUrl" => $req->app->config->baseUrl
-    ]);
-});
+define("SLASH", DIRECTORY_SEPARATOR);
+define("ROOT_PATH", __DIR__);
+define("APP_PATH", ROOT_PATH . "/src/App");
+define("VIEW_PATH", ROOT_PATH . "/src/Views");
 
-$route->handle();
+
+require_once("./src/autoload.php");
+require_once("./src/Helpers/url.php");
+
+$app = new App;
+
+$app->setBaseURL("http://localhost/natively/");
+
+$app->run();

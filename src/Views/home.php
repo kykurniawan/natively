@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About</title>
+    <title>Home</title>
 </head>
 
 <body>
-    <h1>Halaman About</h1>
-    <a href="<?= url('home') ?>">Ke halaman home</a>
+    <h1>Halaman Home!</h1>
+    <a href="<?= url("about") ?>">Ke halaman about</a>
 </body>
 
 </html>
