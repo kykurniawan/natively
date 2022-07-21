@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Core\System;
 
 class Request
 {
@@ -15,6 +15,11 @@ class Request
         $this->queryString = $_SERVER["QUERY_STRING"];
     }
 
+    public function app()
+    {
+        return $this->app;
+    }
+
     public function method(bool $uppercase = true): string
     {
         return $uppercase ? strtoupper($this->method) : strtolower($this->method);
@@ -22,7 +27,7 @@ class Request
 
     public function action(): string
     {
-        return $this->query($this->app->route()->getActionKey());
+        return $this->query($this->app->getRouter()->getActionKey());
     }
 
     public function isGet(): bool

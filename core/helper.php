@@ -4,5 +4,5 @@ function url($action, $queryParams = [])
 {
     global $app;
 
-    return $app->route()->url($action, $queryParams);
+    return $app->getRouter()->url($action, $queryParams);
 }
