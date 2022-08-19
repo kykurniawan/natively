@@ -1,0 +1,47 @@
+<?php
+
+ini_set('display_errors', 1);
+
+class Nue
+{
+    public function __construct($argv, $app)
+    {
+        if (!isset($argv[1])) {
+            echo "Nue Assistant";
+            exit();
+        }
+
+        $parsedCommand = $this->parseCommand($argv[1]);
+
+        if ($parsedCommand[0] === "migrate") {
+            if (!isset($parsedCommand[1])) {
+                echo date("h:i:s") . " Migrating database" . PHP_EOL;
+                $app->getMigration()->up();
+                echo date("h:i:s") . " Migration finished" . PHP_EOL;
+            } else {
+                if ($parsedCommand[1] === "reset") {
+                    echo date("h:i:s") . " Resetting database" . PHP_EOL;
+                    $app->getMigration()->down();
+                    echo date("h:i:s") . " Database reset finished" . PHP_EOL;
+                } elseif ($parsedCommand[1] === "fresh") {
+                    echo date("h:i:s") . " Resetting database" . PHP_EOL;
+                    $app->getMigration()->down();
+                    echo date("h:i:s") . " Migrating database" . PHP_EOL;
+                    $app->getMigration()->up();
+                    echo date("h:i:s") . " Database fresh migration finished" . PHP_EOL;
+                }
+            }
+        }
+    }
+
+    private function parseCommand($command)
+    {
+        return explode(":", $command);
+    }
+}
+
+require_once __DIR__ . "/vendor/autoload.php";
+
+$app = require_once  __DIR__ . "/bootstrap/app.php";
+
+new Nue($argv, $app);

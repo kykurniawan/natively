@@ -71,10 +71,19 @@ class Response
         return;
     }
 
+    public function redirect($action, $queryParams = [])
+    {
+           $url = $this->app()->getRouter()->url($action, $queryParams);
+        $this->setHeader("Location", $url);
+        $this->addHeader();
+        exit();
+    }
+
     private function addHeader()
     {
         foreach ($this->headers as $header) {
             header($header);
         }
+        http_response_code($this->statusCode);
     }
 }

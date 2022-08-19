@@ -2,6 +2,7 @@
 
 namespace Core\System;
 
+use App\Migration;
 use App\Router;
 use Exception;
 
@@ -14,23 +15,30 @@ class App
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->router = new Router($this);
-    }
 
-    public function run()
-    {
         // validate config first
         $this->validateConfig();
 
         // Route
+        $this->router = new Router($this);
         $this->router->setUp();
         $this->router->register();
+    }
+
+    public function run()
+    {
+        // Handle our route actions
         $this->router->handle();
     }
 
     public function getRouter()
     {
         return $this->router;
+    }
+
+    public function getMigration()
+    {
+        return new Migration;
     }
 
     private function validateConfig()

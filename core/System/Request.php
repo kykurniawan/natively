@@ -7,12 +7,16 @@ class Request
     private App $app;
     private string $method;
     private string $queryString;
+    private array $post = [];
+    private array $get = [];
 
     public function __construct(App $app)
     {
         $this->app = $app;
         $this->method = $_SERVER["REQUEST_METHOD"];
         $this->queryString = $_SERVER["QUERY_STRING"];
+        $this->post = $_POST;
+        $this->get = $_GET;
     }
 
     public function app()
@@ -27,7 +31,7 @@ class Request
 
     public function action(): string
     {
-        return $this->query($this->app->getRouter()->getActionKey());
+        return $this->get($this->app->getRouter()->getActionKey());
     }
 
     public function isGet(): bool
@@ -40,17 +44,31 @@ class Request
         return $this->method() === "POST";
     }
 
-    public function queries()
+    public function queryString()
     {
-        parse_str($this->queryString, $queries);
-
-        return $queries;
+        return $this->queryString;
     }
 
-    public function query($key)
+    public function get($key = null)
     {
-        if (!isset($_GET[$key])) return null;
+        if ($key) {
+            if (!isset($this->get[$key])) {
+                return null;
+            }
+            return htmlspecialchars($this->get[$key]);
+        }
+        return $this->get;
+    }
 
-        return $_GET[$key];
+    public function post($key = null)
+    {
+        if ($key) {
+            if (!isset($this->post[$key])) {
+                return null;
+            }
+            return htmlspecialchars($this->post[$key]);
+        }
+
+        return $this->post;
     }
 }

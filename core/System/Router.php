@@ -4,6 +4,8 @@ namespace Core\System;
 
 use Exception;
 
+use function PHPSTORM_META\type;
+
 class Router
 {
     private App $app;
@@ -16,39 +18,22 @@ class Router
         $this->app = $app;
     }
 
-    protected function setDefaultAction(string $defaultAction)
-    {
-        $this->defaultAction = urlencode($defaultAction);
-
-        return $this;
-    }
-
-    protected function setActionKey(string $actionKey)
-    {
-        if ($actionKey === "") {
-            throw new Exception("Invalid action key");
-        }
-        $this->actionKey = $actionKey;
-
-        return $this;
-    }
-
-    protected function action(string $action, $handler)
-    {
-        if (preg_match("/^[a-zA-Z0-9_\-]+$/", $action)) {
-            $this->actions = array_merge($this->actions, [$action => $handler]);
-        } else {
-            throw new Exception("Action: $action is invalid. Only alphanumeric, hyphens, and underscores are allowed.");   
-        }
-    }
-
     public function getActionKey(): string
     {
         return $this->actionKey;
     }
 
+    public function getActionList()
+    {
+        return array_keys($this->actions);
+    }
+
     public function url($action, $queryParams = [])
     {
+        if (in_array($action, $this->getActionList()) === false) {
+            throw new Exception("Action $action not found");
+        }
+
         $queryParams[$this->actionKey] = $action;
 
         $query = http_build_query($queryParams);
@@ -115,6 +100,32 @@ class Router
             echo json_encode($handlerResult);
         } elseif (is_object($handlerResult)) {
             echo json_encode($handlerResult);
+        }
+    }
+
+    protected function setDefaultAction(string $defaultAction)
+    {
+        $this->defaultAction = urlencode($defaultAction);
+
+        return $this;
+    }
+
+    protected function setActionKey(string $actionKey)
+    {
+        if ($actionKey === "") {
+            throw new Exception("Invalid action key");
+        }
+        $this->actionKey = $actionKey;
+
+        return $this;
+    }
+
+    protected function action(string $action, $handler)
+    {
+        if (preg_match("/^[a-zA-Z0-9_.\-]+$/", $action)) {
+            $this->actions = array_merge($this->actions, [$action => $handler]);
+        } else {
+            throw new Exception("Action: $action is invalid. Only alphanumeric, hyphens, dot, and underscores are allowed.");
         }
     }
 }
